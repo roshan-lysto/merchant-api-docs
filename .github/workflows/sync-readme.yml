@@ -1,9 +1,9 @@
 name: Sync README from source repo
 
 on:
-  workflow_dispatch: # Manual run
+  workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # Auto run daily at 00:00 UTC
+    - cron: "0 0 * * *" # Daily at midnight UTC
 
 jobs:
   sync:
@@ -16,8 +16,10 @@ jobs:
           persist-credentials: true
 
       - name: Fetch latest README from private repo
+        env:
+          PERSONAL_TOKEN: ${{ secrets.MY_PERSONAL_TOKEN }}
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          curl -H "Authorization: Bearer $PERSONAL_TOKEN" \
                -H "Accept: application/vnd.github.v3.raw" \
                -o index.md \
                https://api.github.com/repos/lysto-gg/distribution-portal-backend/contents/src/modules/merchant-apis/README.md

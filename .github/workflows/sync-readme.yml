@@ -1,0 +1,26 @@
+name: Sync README from source repo
+
+on:
+  workflow_dispatch: # Manual run
+  schedule:
+    - cron: '0 0 * * *' # Auto run daily at 00:00 UTC
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Fetch latest README
+        run: |
+          curl -o index.md https://raw.githubusercontent.com/lysto-gg/distribution-portal-backend/production/src/modules/merchant-apis/README.md
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.md
+          git commit -m "Update README from source" || echo "No changes to commit"
+          git push

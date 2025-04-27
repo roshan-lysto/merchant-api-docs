@@ -13,11 +13,14 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
-          persist-credentials: true # Important to allow push
+          persist-credentials: true
 
-      - name: Fetch latest README
+      - name: Fetch latest README from private repo
         run: |
-          curl -o index.md https://raw.githubusercontent.com/lysto-gg/distribution-portal-backend/production/src/modules/merchant-apis/README.md
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o index.md \
+               https://api.github.com/repos/lysto-gg/distribution-portal-backend/contents/src/modules/merchant-apis/README.md
 
       - name: Commit and push changes
         run: |
